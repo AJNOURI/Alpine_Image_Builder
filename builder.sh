@@ -9,69 +9,57 @@ function addtool(){
   echo "RUN apk add $1" >> Dockerfile
 }
 
-cmd=(dialog --separate-output --checklist "Select options:" 22 76 16)
-options=(1 "openssh" off
-         2 "mtr" off
-         3 "nmap" off
-         4 "iperf" off
-         5 "socat" off
-         6 "vim" off
-         7 "nano" off
-         8 "curl" off
-         9 "links" off
-         10 "iputils" off
-         11 "rsync" off
-         12 "bash" off)
+cmd=(dialog --separate-output --checklist "Select tools to include in the Docker image:" 22 76 16)
+options=(openssh "Tool for remote login with the SSH protocol." off
+         mtr "Combines 'traceroute' and 'ping' in a single network diagnostic tool." off
+         nmap "For network discovery and security auditing" off
+         iperf "Tool for active Bandwidth measurements." off
+         socat "Relay for bidirectional data transfer under Linux." off
+         vim "Text editor" off
+         nano "Text editor" off
+         curl "Get documents/files from or send documents to a server." off
+         links "Text web browser." off
+         iputils "Set of small useful utilities for Linux networking." off
+         rsync "Provides fast incremental file transfer." off
+         bash "sh-compatible shell that incorporates useful features." off)
 
 choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
 response=$?
 case $response in
    0) ;;
-   1) exit 0;;
-   255) exit 0;;
+   1) clear;exit 0;;
+   255) clear;exit 0;;
 esac
 
 header
 for choice in $choices
 do
     case $choice in
-        1)
-            addtool openssh
-            ;;
-        2)
-            addtool mtr
-            ;;
-        3)
-            addtool nmap
-            ;;
-        4)
-            addtool iperf
-            ;;
-        5)
-            addtool socat
-            ;;
-        6)
-            addtool vim
-            ;;
-        7)
-            addtool nano
-            ;;
-        8)
-            addtool curl
-            ;;
-        9)
-            addtool links
-            ;;
-        10)
-            addtool iputils
-            ;;
-        11)
-            addtool rsync
-            ;;
-        12)
-            addtool bash
-            ;;
+        openssh)
+            addtool openssh;;
+        mtr)
+            addtool mtr;;
+        nmap)
+            addtool nmap;;
+        iperf)
+            addtool iperf;;
+        socat)
+            addtool socat;;
+        vim)
+            addtool vim;;
+        nano)
+            addtool nano;;
+        curl)
+            addtool curl;;
+        links)
+            addtool links;;
+        iputils)
+            addtool iputils;;
+        rsync)
+            addtool rsync;;
+        bash)
+            addtool bash;;
     esac
 done
 
@@ -82,7 +70,7 @@ do
   image=`cat inputbox.tmp.$$`
   echo $image
   if [[ -z "${image// /}" ]]; then
-    dialog --title "Required" --msgbox 'Image name cannot be empty!' 6 20
+    dialog --title "Required" --msgbox 'Image name cannot be empty!' 10 40
   else
     break
   fi 
