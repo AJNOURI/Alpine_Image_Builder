@@ -3,6 +3,12 @@
 function header(){
   echo "FROM alpine" > Dockerfile
   echo "RUN apk update" >> Dockerfile
+  echo "RUN apk add openssh" >> Dockerfile
+}
+
+function footer(){
+  echo "VOLUME /root/.ssh /etc/ssh /data" >> Dockerfile
+  echo "ADD start-ssh.sh start-ssh.sh" >> Dockerfile
 }
 
 function addtool(){
@@ -10,8 +16,7 @@ function addtool(){
 }
 
 cmd=(dialog --separate-output --checklist "Select tools to include in the Docker image:" 22 76 16)
-options=(openssh "Tool for remote login with the SSH protocol." off
-         mtr "Combines 'traceroute' and 'ping' in a single network diagnostic tool." off
+options=(mtr "Combines 'traceroute' and 'ping' in a single network diagnostic tool." off
          nmap "For network discovery and security auditing" off
          iperf "Tool for active Bandwidth measurements." off
          socat "Relay for bidirectional data transfer under Linux." off
@@ -20,6 +25,7 @@ options=(openssh "Tool for remote login with the SSH protocol." off
          curl "Get documents/files from or send documents to a server." off
          links "Text web browser." off
          iputils "Set of small useful utilities for Linux networking." off
+         bind-tools "DNS tools including dig." off
          rsync "Provides fast incremental file transfer." off
          bash "sh-compatible shell that incorporates useful features." off)
 
@@ -36,8 +42,6 @@ header
 for choice in $choices
 do
     case $choice in
-        openssh)
-            addtool openssh;;
         mtr)
             addtool mtr;;
         nmap)
@@ -56,13 +60,15 @@ do
             addtool links;;
         iputils)
             addtool iputils;;
+        bind-tools)
+            addtool bind-tools;;
         rsync)
             addtool rsync;;
         bash)
             addtool bash;;
     esac
 done
-
+footer
 
 while true
 do
